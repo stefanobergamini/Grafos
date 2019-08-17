@@ -3,7 +3,7 @@ import re
 
 class Grafo:
     vertices = {}
-    #Estrutura de Arestas é da origem do vertice ate o proximo Exemplo '1' : { '133' : '1.0' }
+    # Estrutura de Arestas é da origem do vertice ate o proximo Exemplo '1' : { '133' : '1.0' }
     arestas = {}
 
     def __init__(self):
@@ -34,9 +34,9 @@ class Grafo:
             return False
 
     def peso(self, vertice1, vertice2):
-        aresta = self.arestas.get((vertice1, vertice2), False)
-        if aresta:
-            return aresta
+        peso = self.arestas.get(vertice1, False).get(vertice2, False)
+        if peso:
+            return peso
         else:
             return float("inf")
 
@@ -52,12 +52,12 @@ class Grafo:
         for i in range(len(edges)):
             temp = edges[i].replace('\n', '').split(' ')
             if self.arestas.get(temp[0], False):
-                self.arestas[temp[0]].update({ temp[1]: temp[2] })
+                self.arestas[temp[0]].update({temp[1]: temp[2]})
             else:
-                self.arestas.update({ temp[0]: { temp[1]: temp[2] } }) 
+                self.arestas.update({temp[0]: {temp[1]: temp[2]}})
         file.close()
 
-grafo = Grafo()
 
-print(grafo.qtdArestas())
-print(grafo.qtdVertices())
+grafo = Grafo()
+print(grafo.vizinhos('135'))
+print(grafo.peso('1', '132'))
