@@ -25,7 +25,10 @@ class Grafo:
         return vertice
 
     def vizinhos(self, vertice):
-        return list(self.arestas[vertice].keys())
+        if self.arestas.get(vertice, False): 
+            return list(self.arestas[vertice].keys())
+        else:
+            return []
 
     def haAresta(self, vertice1, vertice2):
         if self.arestas.get(vertice1, False).get(vertice2, False):
@@ -41,7 +44,7 @@ class Grafo:
             return float("inf")
 
     def ler(self):
-        file = open('./grafos/facebook_santiago.net')
+        file = open('./grafos/agm_tiny.net')
         infos = file.readlines()
         qtdVertices = int(re.search(r"[0-9]+", infos[0]).group())
         vertices = infos[1: qtdVertices + 1]
@@ -60,4 +63,3 @@ class Grafo:
 
 grafo = Grafo()
 print(grafo.vizinhos('135'))
-print(grafo.peso('1', '132'))
