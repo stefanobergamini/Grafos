@@ -51,7 +51,7 @@ class Grafo:
         edges = infos[qtdVertices + 2:]
         for i in range(len(vertices)):
             self.vertices.update(
-                {i + 1: re.search(r"\"([^0-9]+)\"$", vertices[i]).group().replace('"', '')})
+                {str(i + 1): re.search(r"\"([^0-9]+)\"$", vertices[i]).group().replace('"', '')})
         for i in range(len(edges)):
             temp = edges[i].replace('\n', '').split(' ')
             if self.arestas.get(temp[0], False):
@@ -60,6 +60,3 @@ class Grafo:
                 self.arestas.update({temp[0]: {temp[1]: temp[2]}})
         file.close()
 
-
-grafo = Grafo()
-print(grafo.vizinhos('135'))
