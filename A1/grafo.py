@@ -22,7 +22,7 @@ class Grafo:
         return vertice
 
     def rotulo(self, vertice):
-        return vertice
+        return self.vertices.get(vertice, False)
 
     def vizinhos(self, vertice):
         if self.arestas.get(vertice, False): 
@@ -60,3 +60,5 @@ class Grafo:
                 self.arestas.update({temp[0]: {temp[1]: temp[2]}})
         file.close()
 
+grafo = Grafo()
+print(grafo.rotulo('1'))
