@@ -3,8 +3,8 @@ import re
 
 class Grafo:
     vertices = {}
-    # Estrutura de Arestas é da origem do vertice ate o proximo Exemplo '1' : { '133' : '1.0' }
     arestas = {}
+    # Estrutura de Arestas é da origem do vertice ate o proximo Exemplo:  1 : { 133 : 1.0 }
 
     def __init__(self):
         self.ler()
@@ -49,6 +49,25 @@ class Grafo:
     def peso(self, vertice1, vertice2):
         return self.arestas.get(vertice1, float("inf")).get(vertice2, float("inf"))
 
+    def buscaEmLargura(self, vertice):
+        CDA = {}
+        for i in range(1, len(self.vertices) + 1):
+            CDA.update({i : { 'c' : False, 'd' : float('inf'), 'a' : None}})
+        Q = []
+        Q.append(vertice)
+        CDA[vertice]['c'] = True
+        CDA[vertice]['d'] = 0
+        while Q:
+            u = Q.pop(0)
+            if self.arestas.get(u, False):
+                for i in list(self.arestas[u].keys()):
+                    if CDA[i]['c'] == False:
+                        CDA[i]['c'] = True
+                        CDA[i]['d'] = CDA[u]['d'] + 1
+                        CDA[i]['a'] = u
+                        Q.append(i)
+        return CDA
+
     def ler(self):
         file = open('./grafos/agm_tiny.net')
         infos = file.readlines()
@@ -76,3 +95,4 @@ print('Resposta da Função rotulo para o Vertice 2: \n', grafo.rotulo(2))
 print('Resposta da Função vizinhos para o vertice 2: \n', grafo.vizinhos(2))
 print('Resposta da Função haAresta para o Conjunto {1,2}: \n', grafo.haAresta(1,2))
 print('Resposta da Função peso para o Conjunto {1,2}: \n', grafo.peso(1,2))
+print(grafo.buscaEmLargura(5))
