@@ -22,8 +22,8 @@ class Grafo:
         grau = 0
         if self.arestas.get(vertice, False):
             grau = len(self.arestas.get(vertice, False))
-        for i in range(1, len(self.vertices)):
-            if i != vertice and self.arestas.get(i, False).get(vertice, False):
+        for i in list(self.vertices.keys()):
+            if i != vertice and self.arestas.get(i, False) and self.arestas[i].get(vertice, False):
                 grau += 1
         return grau
 
@@ -35,8 +35,8 @@ class Grafo:
             vizinhos = list(self.arestas[vertice].keys())
         else: 
             vizinhos = []
-        for i in range(1, len(self.vertices)):
-            if vertice in list(self.arestas.get(i, False).keys()):
+        for i in list(self.vertices.keys()):
+            if self.arestas.get(i, False) and vertice in list(self.arestas.get(i, False).keys()):
                 vizinhos.append(i)
         return sorted(vizinhos)
 
@@ -51,12 +51,13 @@ class Grafo:
 
     def buscaEmLargura(self, vertice):
         CDA = {}
-        for i in range(1, len(self.vertices) + 1):
+        for i in self.vertices:
             CDA.update({i : { 'c' : False, 'd' : float('inf'), 'a' : None}})
         Q = []
         Q.append(vertice)
         CDA[vertice]['c'] = True
         CDA[vertice]['d'] = 0
+
         while Q:
             u = Q.pop(0)
             if self.arestas.get(u, False):
@@ -95,4 +96,4 @@ print('Resposta da Função rotulo para o Vertice 2: \n', grafo.rotulo(2))
 print('Resposta da Função vizinhos para o vertice 2: \n', grafo.vizinhos(2))
 print('Resposta da Função haAresta para o Conjunto {1,2}: \n', grafo.haAresta(1,2))
 print('Resposta da Função peso para o Conjunto {1,2}: \n', grafo.peso(1,2))
-print(grafo.buscaEmLargura(5))
+print('Resposta da Função busca em largura para o vertice 1: \n', grafo.buscaEmLargura(1))
