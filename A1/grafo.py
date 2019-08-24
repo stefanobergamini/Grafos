@@ -22,7 +22,7 @@ class Grafo:
         grau = 0
         if self.arestas.get(vertice, False):
             grau = len(self.arestas.get(vertice, False))
-        for i in list(self.vertices.keys()):
+        for i in self.vertices:
             if i != vertice and self.arestas.get(i, False) and self.arestas[i].get(vertice, False):
                 grau += 1
         return grau
@@ -33,9 +33,9 @@ class Grafo:
     def vizinhos(self, vertice):
         if self.arestas.get(vertice, False):
             vizinhos = list(self.arestas[vertice].keys())
-        else: 
+        else:
             vizinhos = []
-        for i in list(self.vertices.keys()):
+        for i in self.vertices:
             if self.arestas.get(i, False) and vertice in list(self.arestas.get(i, False).keys()):
                 vizinhos.append(i)
         return sorted(vizinhos)
@@ -52,7 +52,7 @@ class Grafo:
     def buscaEmLargura(self, vertice):
         CDA = {}
         for i in self.vertices:
-            CDA.update({i : { 'c' : False, 'd' : float('inf'), 'a' : None}})
+            CDA.update({i: {'c': False, 'd': float('inf'), 'a': None}})
         Q = []
         Q.append(vertice)
         CDA[vertice]['c'] = True
@@ -67,7 +67,15 @@ class Grafo:
                         CDA[i]['d'] = CDA[u]['d'] + 1
                         CDA[i]['a'] = u
                         Q.append(i)
-        return CDA
+        result = {}
+        for i in CDA:
+            if result.get(CDA[i]['d'], False):
+                result[CDA[i]['d']].append(i)
+            elif CDA[i]['d'] != float('inf'):
+                result[CDA[i]['d']] = [i]
+        # for i in result:
+        #     print(i ,':', ','.join([str(i) for i in result[i]]))
+        return result
 
     def ler(self):
         file = open('./grafos/agm_tiny.net')
@@ -81,7 +89,8 @@ class Grafo:
         for i in range(len(edges)):
             temp = edges[i].replace('\n', '').split(' ')
             if self.arestas.get(int(temp[0]), False):
-                self.arestas[int(temp[0])].update({int(temp[1]): float(temp[2])})
+                self.arestas[int(temp[0])].update(
+                    {int(temp[1]): float(temp[2])})
             else:
                 self.arestas.update(
                     {int(temp[0]): {int(temp[1]): float(temp[2])}})
@@ -94,6 +103,6 @@ print('Resposta da Função qtdArestas: \n', grafo.qtdArestas())
 print('Resposta da Função grau para o Vertice 2: \n', grafo.grau(2))
 print('Resposta da Função rotulo para o Vertice 2: \n', grafo.rotulo(2))
 print('Resposta da Função vizinhos para o vertice 2: \n', grafo.vizinhos(2))
-print('Resposta da Função haAresta para o Conjunto {1,2}: \n', grafo.haAresta(1,2))
-print('Resposta da Função peso para o Conjunto {1,2}: \n', grafo.peso(1,2))
+print('Resposta da Função haAresta para o Conjunto {1,2}: \n', grafo.haAresta(1, 2))
+print('Resposta da Função peso para o Conjunto {1,2}: \n', grafo.peso(1, 2))
 print('Resposta da Função busca em largura para o vertice 1: \n', grafo.buscaEmLargura(1))
