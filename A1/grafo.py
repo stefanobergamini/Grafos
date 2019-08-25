@@ -73,9 +73,10 @@ class Grafo:
                 result[CDA[i]['d']].append(i)
             elif CDA[i]['d'] != float('inf'):
                 result[CDA[i]['d']] = [i]
-        # for i in result:
-        #     print(i ,':', ','.join([str(i) for i in result[i]]))
-        return result
+      
+        print('\nResposta da Função busca em largura para o vertice %s:' % (vertice))
+        for i in result:
+            print('%d:' % i, ','.join([str(i) for i in result[i]]))
 
     def ler(self):
         file = open('./grafos/agm_tiny.net')
@@ -98,11 +99,11 @@ class Grafo:
 
 
 grafo = Grafo()
-print('Resposta da Função qtdVertices: \n', grafo.qtdVertices())
-print('Resposta da Função qtdArestas: \n', grafo.qtdArestas())
-print('Resposta da Função grau para o Vertice 2: \n', grafo.grau(2))
-print('Resposta da Função rotulo para o Vertice 2: \n', grafo.rotulo(2))
-print('Resposta da Função vizinhos para o vertice 2: \n', grafo.vizinhos(2))
-print('Resposta da Função haAresta para o Conjunto {1,2}: \n', grafo.haAresta(1, 2))
-print('Resposta da Função peso para o Conjunto {1,2}: \n', grafo.peso(1, 2))
-print('Resposta da Função busca em largura para o vertice 1: \n', grafo.buscaEmLargura(1))
+print('Resposta da Função qtdVertices: ', grafo.qtdVertices())
+print('Resposta da Função qtdArestas: ', grafo.qtdArestas())
+print('Resposta da Função grau para o Vertice 2: ', grafo.grau(2))
+print('Resposta da Função rotulo para o Vertice 2: ', grafo.rotulo(2))
+print('Resposta da Função vizinhos para o vertice 2: ', grafo.vizinhos(2))
+print('Resposta da Função haAresta para o Conjunto {1,2}: ', grafo.haAresta(1, 2))
+print('Resposta da Função peso para o Conjunto {1,2}: ', grafo.peso(1, 2))
+grafo.buscaEmLargura(1)
