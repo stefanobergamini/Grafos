@@ -78,6 +78,20 @@ class Grafo:
         for i in result:
             print('%d:' % i, ','.join([str(i) for i in result[i]]))
 
+
+    # Ciclo e SubCiclo euleriano
+    def buscaSubCicloEuleriano(self, vertice):
+        Ciclo = {vertice}
+
+    def buscaCicloEuleriano(self, vertice):
+        C = {}
+        for e in range(1, len(self.arestas)):
+            C.update({e: {c: False}})
+
+        # selecionar vertice aleatorio?
+        result = buscaSubCicloEuleriano(vertice, )
+
+
     def ler(self):
         file = open('./grafos/agm_tiny.net')
         infos = file.readlines()
