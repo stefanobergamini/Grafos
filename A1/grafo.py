@@ -74,23 +74,34 @@ class Grafo:
             elif CDA[i]['d'] != float('inf'):
                 result[CDA[i]['d']] = [i]
       
-        print('\nResposta da Função busca em largura para o vertice %s:' % (vertice))
+        print('Resposta da Função busca em largura para o vertice %s:' % (vertice))
         for i in result:
             print('%d:' % i, ','.join([str(i) for i in result[i]]))
 
 
-    # Ciclo e SubCiclo euleriano
-    def buscaSubCicloEuleriano(self, vertice):
-        Ciclo = {vertice}
 
-    def buscaCicloEuleriano(self, vertice):
+    def buscaCicloEuleriano(self):
         C = {}
-        for e in range(1, len(self.arestas)):
-            C.update({e: {c: False}})
+        for i in self.arestas:
+            for j in self.arestas[i]:
+                if C.get(i, False):
+                    C[i].update({j: False}) 
+                else:
+                    C.update({i: {j : False}})
+        buscaSubCicloEuleriano(1,C)
+        
 
         # selecionar vertice aleatorio?
-        result = buscaSubCicloEuleriano(vertice, )
+        # result = buscaSubCicloEuleriano(vertice, )
 
+    # Ciclo e SubCiclo euleriano
+    def buscaSubCicloEuleriano(self, v, C):
+        Ciclo = [v]
+        t = v
+        while(true):
+            
+            if(v==t):
+                break
 
     def ler(self):
         file = open('./grafos/agm_tiny.net')
@@ -121,3 +132,4 @@ print('Resposta da Função vizinhos para o vertice 2: ', grafo.vizinhos(2))
 print('Resposta da Função haAresta para o Conjunto {1,2}: ', grafo.haAresta(1, 2))
 print('Resposta da Função peso para o Conjunto {1,2}: ', grafo.peso(1, 2))
 grafo.buscaEmLargura(1)
+grafo.buscaCicloEuleriano()
