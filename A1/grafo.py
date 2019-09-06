@@ -86,19 +86,36 @@ class Grafo:
         t = v
         while(True):
             # Só prossegue se existir uma aresta não-visitada conectada ao Ciclo.
-            if self.arestas.get(Ciclo[-1], False) == False:
-                return (False, None)
-            
-            else:
-                for aresta in C[Ciclo[-1]]:
-                    if C[Ciclo[-1]][aresta] == False:
-                        C[Ciclo[-1]].update({aresta: True})
-                        v = aresta
-                        Ciclo.append(aresta)
+            if C.get(Ciclo[-1],False) == False:
+                # Caso não tenha no exemplo de {2 : n : False}, procurar por {n: 2 : False} Obs: São arestas e não arcos
+                
+                # Variavel Auxiliar para saber se encontrou alguma aresta livre 
+                aux = False
+                for i in C:
+                    if C[i].get(Ciclo[-1]) == False:
+                        aux = True
+                        C[i].update({Ciclo[-1]: True})
+                        v = i
+                        Ciclo.append(i)
                         break
-                print(Ciclo)
+
+                # Caso não encontre uma aresta livre, isso implica em que não existe um ciclo euleriano
+                if aux == False:
+                    return (False, None)
+            else:
+                if C.get(Ciclo[-1], False) != False:
+                    for aresta in C[Ciclo[-1]]:
+                        if C[Ciclo[-1]][aresta] == False:
+                            C[Ciclo[-1]].update({aresta: True})
+                            v = aresta
+                            Ciclo.append(aresta)
+                            break
             if(v==t):
                 break
+
+        # para todo o vertice X no ciclo que tenha uma aresta adjacente nao visitada
+        for x in Ciclo:
+            print(x)
 
         return Ciclo
 
@@ -116,7 +133,7 @@ class Grafo:
 
 
     def ler(self):
-        file = open('./grafos/agm_tiny.net')
+        file = open('./grafos/ContemCicloEuleriano.net')
         infos = file.readlines()
         qtdVertices = int(re.search(r"[0-9]+", infos[0]).group())
         vertices = infos[1: qtdVertices + 1]
