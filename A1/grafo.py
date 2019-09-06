@@ -78,7 +78,29 @@ class Grafo:
         for i in result:
             print('%d:' % i, ','.join([str(i) for i in result[i]]))
 
+        
+    # Ciclo e SubCiclo euleriano
 
+    def buscaSubCicloEuleriano(self, v, C):
+        Ciclo = [v]
+        t = v
+        while(True):
+            # Só prossegue se existir uma aresta não-visitada conectada ao Ciclo.
+            if self.arestas.get(Ciclo[-1], False) == False:
+                return (False, None)
+            
+            else:
+                for aresta in C[Ciclo[-1]]:
+                    if C[Ciclo[-1]][aresta] == False:
+                        C[Ciclo[-1]].update({aresta: True})
+                        v = aresta
+                        Ciclo.append(aresta)
+                        break
+                print(Ciclo)
+            if(v==t):
+                break
+
+        return Ciclo
 
     def buscaCicloEuleriano(self):
         C = {}
@@ -88,20 +110,10 @@ class Grafo:
                     C[i].update({j: False}) 
                 else:
                     C.update({i: {j : False}})
-        buscaSubCicloEuleriano(1,C)
-        
+        subCiclo = self.buscaSubCicloEuleriano(1,C)
+        print(subCiclo)
+    
 
-        # selecionar vertice aleatorio?
-        # result = buscaSubCicloEuleriano(vertice, )
-
-    # Ciclo e SubCiclo euleriano
-    def buscaSubCicloEuleriano(self, v, C):
-        Ciclo = [v]
-        t = v
-        while(true):
-            
-            if(v==t):
-                break
 
     def ler(self):
         file = open('./grafos/agm_tiny.net')
