@@ -73,23 +73,21 @@ class Grafo:
                 result[CDA[i]['d']].append(i)
             elif CDA[i]['d'] != float('inf'):
                 result[CDA[i]['d']] = [i]
-      
+
         print('Resposta da Função busca em largura para o vertice %s:' % (vertice))
         for i in result:
             print('%d:' % i, ','.join([str(i) for i in result[i]]))
 
-        
     # Ciclo e SubCiclo euleriano
-
     def buscaSubCicloEuleriano(self, v, C):
         Ciclo = [v]
         t = v
         while(True):
             # Só prossegue se existir uma aresta não-visitada conectada ao Ciclo.
-            if C.get(Ciclo[-1],False) == False:
+            if C.get(Ciclo[-1], False) == False:
                 # Caso não tenha no exemplo de {2 : n : False}, procurar por {n: 2 : False} Obs: São arestas e não arcos
-                
-                # Variavel Auxiliar para saber se encontrou alguma aresta livre 
+
+                # Variavel Auxiliar para saber se encontrou alguma aresta livre
                 aux = False
                 for i in C:
                     if C[i].get(Ciclo[-1]) == False:
@@ -110,7 +108,7 @@ class Grafo:
                             v = aresta
                             Ciclo.append(aresta)
                             break
-            if(v==t):
+            if(v == t):
                 break
 
         # para todo o vertice X no ciclo que tenha uma aresta adjacente nao visitada
@@ -119,7 +117,7 @@ class Grafo:
             for y in C.get(x, []):
                 if C[x][y] == False:
                     # CicloAux vai retornar uma tupla de (True ou False, Array)
-                    CicloAux = self.buscaSubCicloEuleriano(x,C)
+                    CicloAux = self.buscaSubCicloEuleriano(x, C)
                     # Caso neste subciclo não achar um ciclo euleriano ele vai retornar uma tupla com (False, None)
                     if CicloAux[0] == False:
                         return (False, None)
@@ -133,10 +131,10 @@ class Grafo:
         for i in self.arestas:
             for j in self.arestas[i]:
                 if C.get(i, False):
-                    C[i].update({j: False}) 
+                    C[i].update({j: False})
                 else:
-                    C.update({i: {j : False}})
-        ciclo = self.buscaSubCicloEuleriano(1,C)
+                    C.update({i: {j: False}})
+        ciclo = self.buscaSubCicloEuleriano(1, C)
         if ciclo[0] == False:
             print('Resposta da Função buscaCicloEuleriano: ')
             print('0')
@@ -145,7 +143,8 @@ class Grafo:
             print('1')
             print(str(ciclo[1]))
 
-
+    def dijkstra(self):
+        return 0
 
     def ler(self):
         file = open('./grafos/ContemCicloEuleriano.net')
@@ -177,3 +176,4 @@ print('Resposta da Função haAresta para o Conjunto {1,2}: ', grafo.haAresta(1,
 print('Resposta da Função peso para o Conjunto {1,2}: ', grafo.peso(1, 2))
 grafo.buscaEmLargura(1)
 grafo.buscaCicloEuleriano()
+grafo.dijkstra()
