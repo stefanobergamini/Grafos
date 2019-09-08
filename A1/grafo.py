@@ -115,9 +115,18 @@ class Grafo:
 
         # para todo o vertice X no ciclo que tenha uma aresta adjacente nao visitada
         for x in Ciclo:
-            print(x)
-
-        return Ciclo
+            # como C é organizado como x : { y : False ou True } necessário um segundo laço para verificar se a aresta ja foi visitada
+            for y in C.get(x, []):
+                if C[x][y] == False:
+                    # CicloAux vai retornar uma tupla de (True ou False, Array)
+                    CicloAux = self.buscaSubCicloEuleriano(x,C)
+                    # Caso neste subciclo não achar um ciclo euleriano ele vai retornar uma tupla com (False, None)
+                    if CicloAux[0] == False:
+                        return (False, None)
+                    insertPosition = Ciclo.index(x)
+                    Ciclo.remove(x)
+                    Ciclo[insertPosition:insertPosition] = CicloAux[1]
+        return (True, Ciclo)
 
     def buscaCicloEuleriano(self):
         C = {}
@@ -127,9 +136,15 @@ class Grafo:
                     C[i].update({j: False}) 
                 else:
                     C.update({i: {j : False}})
-        subCiclo = self.buscaSubCicloEuleriano(1,C)
-        print(subCiclo)
-    
+        ciclo = self.buscaSubCicloEuleriano(1,C)
+        if ciclo[0] == False:
+            print('Resposta da Função buscaCicloEuleriano: ')
+            print('0')
+        else:
+            print('Resposta da Função buscaCicloEuleriano: ')
+            print('1')
+            print(str(ciclo[1]))
+
 
 
     def ler(self):
