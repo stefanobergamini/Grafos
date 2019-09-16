@@ -1,6 +1,5 @@
 import re
 
-
 class Grafo:
     vertices = {}
     arestas = {}
@@ -143,8 +142,31 @@ class Grafo:
             print('1')
             print(str(ciclo[1]))
 
-    def dijkstra(self):
-        return 0
+    def dijkstra(self, vertice):
+        CDA = {}
+        allNotVisited = True
+
+        for i in self.vertices:
+            CDA.update({i: {'c': False, 'd': float('inf'), 'a': None}})
+
+        CDA[vertice].update({c: True, d: 0})
+
+        while allNotVisited:
+            u = min(vizinhos(vertice))
+            CDA[u]['c'] = True
+
+            for v in vizinhos(u):
+                if (CDA[v]['c'] == False):
+                    if (CDA[v]['d'] > CDA[u]['d'] + peso(u, v)):
+                        CDA[v].update({d: CDA[u]['d'] + peso(u, v), a: u})
+            
+            for a in CDA:
+                visited = False
+        return CDA.get()
+            
+
+        
+
 
     def ler(self):
         file = open('./grafos/ContemCicloEuleriano.net')
@@ -176,4 +198,4 @@ print('Resposta da Função haAresta para o Conjunto {1,2}: ', grafo.haAresta(1,
 print('Resposta da Função peso para o Conjunto {1,2}: ', grafo.peso(1, 2))
 grafo.buscaEmLargura(1)
 grafo.buscaCicloEuleriano()
-grafo.dijkstra()
+grafo.dijkstra(1)
