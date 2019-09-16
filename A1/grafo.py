@@ -164,15 +164,14 @@ class Grafo:
                     if (CDA[v]['d'] > CDA[u]['d'] + peso(u, v)):
                         CDA[v].update({d: CDA[u]['d'] + peso(u, v), a: u})
         
+        path = []
         for i in CDA:
-            path = []
             dist = 0
             if (CDA[i]['d'] == dist):
                 path.append(CDA[i]['d'])
                 dist += 1
-            
-            print(list(path))
-            
+                    
+        print(list(path))
    
             
 
