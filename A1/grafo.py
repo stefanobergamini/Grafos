@@ -144,25 +144,36 @@ class Grafo:
 
     def dijkstra(self, vertice):
         CDA = {}
-        allNotVisited = True
+        unvisited = {}
 
         for i in self.vertices:
             CDA.update({i: {'c': False, 'd': float('inf'), 'a': None}})
+            unvisited.update({i: {'d': CDA[i]['d']}})
 
-        CDA[vertice].update({c: True, d: 0})
+        CDA[vertice]['c'] = True
+        CDA[vertice]['d'] = 0
+        unvisited.pop(vertice)
 
-        while allNotVisited:
-            u = min(vizinhos(vertice))
+        while len(unvisited) > 0:
+            u = min({(v, unvisited[v]['d']) for v in unvisited})
+            unvisited.pop(u)
             CDA[u]['c'] = True
 
             for v in vizinhos(u):
                 if (CDA[v]['c'] == False):
                     if (CDA[v]['d'] > CDA[u]['d'] + peso(u, v)):
                         CDA[v].update({d: CDA[u]['d'] + peso(u, v), a: u})
+        
+        for i in CDA:
+            path = []
+            dist = 0
+            if (CDA[i]['d'] == dist):
+                path.append(CDA[i]['d'])
+                dist += 1
             
-            for a in CDA:
-                visited = False
-        return CDA.get()
+            print(list(path))
+            
+   
             
 
         
