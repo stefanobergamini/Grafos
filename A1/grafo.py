@@ -46,9 +46,13 @@ class Grafo:
         if self.arestas.get(vertice1, False):
             if self.arestas.get(vertice1, False).get(vertice2, False):
                 return True
+            else:
+                return False
         elif self.arestas.get(vertice2, False):
                 if self.arestas.get(vertice2, False).get(vertice1, False):
                     return True
+                else:
+                    return False
         else:
             return False
 
@@ -226,7 +230,13 @@ class Grafo:
                 for j in self.vertices:
                     if dist[i][j]['d'] > (dist[i][n]['d'] + dist[n][j]['d']):
                         dist[i][j]['d'] = (dist[i][n]['d'] + dist[n][j]['d'])
-        print(dist)
+
+        print('\nResposta Função Floyd Warshall')
+        for i in self.vertices:
+            path = []
+            for j in self.vertices:
+                path.append(dist[i][j]['d'])
+            print(i,':', ','.join([str(i) for i in path]))
 
     def ler(self):
         # Modificar os grafos para cada Algoritmo
@@ -255,7 +265,7 @@ print('Resposta da Função qtdArestas: ', grafo.qtdArestas())
 print('Resposta da Função grau para o Vertice 2: ', grafo.grau(2))
 print('Resposta da Função rotulo para o Vertice 2: ', grafo.rotulo(2))
 print('Resposta da Função vizinhos para o vertice 2: ', grafo.vizinhos(2))
-print('Resposta da Função haAresta para o Conjunto {1,2}: ', grafo.haAresta(1, 2))
+print('Resposta da Função haAresta para o Conjunto {6,1}: ', grafo.haAresta(6,1))
 print('Resposta da Função peso para o Conjunto {1,2}: ', grafo.peso(2, 1))
 grafo.buscaEmLargura(1)
 grafo.buscaCicloEuleriano()
