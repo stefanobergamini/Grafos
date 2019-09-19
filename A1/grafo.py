@@ -43,23 +43,33 @@ class Grafo:
         return sorted(vizinhos)
 
     def haAresta(self, vertice1, vertice2):
-        if (self.dirigido):
-            if self.arestas.get(vertice1, False):
-                if self.arestas.get(vertice1, False).get(vertice2, False):
-                    return True
-            elif self.arestas.get(vertice2, False):
-                    if self.arestas.get(vertice2, False).get(vertice1, False):
-                        return True
-            else:
-                return False
-        elif self.arestas.get(vertice1, False):
+        if self.arestas.get(vertice1, False):
             if self.arestas.get(vertice1, False).get(vertice2, False):
                 return True
-        else:    
+        elif self.arestas.get(vertice2, False):
+                if self.arestas.get(vertice2, False).get(vertice1, False):
+                    return True
+        else:
             return False
 
     def peso(self, vertice1, vertice2):
-        return self.arestas.get(vertice1, float("inf")).get(vertice2, float("inf"))
+        if self.arestas.get(vertice1, False):
+            if self.arestas.get(vertice1).get(vertice2, False):
+                return self.arestas.get(vertice1).get(vertice2)
+            elif self.arestas.get(vertice2, False):
+                if self.arestas.get(vertice2).get(vertice1, False):
+                    return self.arestas.get(vertice2).get(vertice1)
+                else:
+                    return float("inf")
+            else:
+                return float("inf")
+        elif self.arestas.get(vertice2, False):
+            if self.arestas.get(vertice2).get(vertice1, False):
+                return self.arestas.get(vertice2).get(vertice1)
+            else:
+                return float("inf")
+        else:
+            return float("inf")
 
     def buscaEmLargura(self, vertice):
         CDA = {}
@@ -195,23 +205,32 @@ class Grafo:
         for i in self.vertices:
             for j in self.vertices:
                 if (i == j):
-                    dist.update({i: {j: {'d': 0}}}) 
+                    if dist.get(i,False) == False:
+                        dist.update({i: {j: {'d': 0}}}) 
+                    else: 
+                        dist[i].update({j: {'d': 0}})
                 elif (not self.haAresta(i, j)):
-                    dist.update({i: {j: {'d': float('inf')}}}) 
+                    if dist.get(i,False) == False:
+                        dist.update({i: {j: {'d': float('inf')}}})
+                    else: 
+                        dist[i].update({j: {'d': float('inf')}})
                 else:
-                    dist.update({i: {j: {'d': self.peso(i, j)}}})
+                    if dist.get(i,False) == False:
+                        dist.update({i: {j: {'d': self.peso(i, j)}}})
+                    else: 
+                        dist[i].update({j: {'d': self.peso(i, j)}})
 
         # updating values with min of distances
         for n in self.vertices:
             for i in self.vertices:
                 for j in self.vertices:
-                    if dist[i][j]['d'] > dist[i][n]['d'] + dist[n][j]['d']:
+                    if dist[i][j]['d'] > (dist[i][n]['d'] + dist[n][j]['d']):
                         dist[i][j]['d'] = (dist[i][n]['d'] + dist[n][j]['d'])
-
+        print(dist)
 
     def ler(self):
         # Modificar os grafos para cada Algoritmo
-        file = open('./grafos/fln_pequena.net')
+        file = open('./grafos/ContemCicloEuleriano.net')
         infos = file.readlines()
         qtdVertices = int(re.search(r"[0-9]+", infos[0]).group())
         vertices = infos[1: qtdVertices + 1]
@@ -237,7 +256,8 @@ print('Resposta da Função grau para o Vertice 2: ', grafo.grau(2))
 print('Resposta da Função rotulo para o Vertice 2: ', grafo.rotulo(2))
 print('Resposta da Função vizinhos para o vertice 2: ', grafo.vizinhos(2))
 print('Resposta da Função haAresta para o Conjunto {1,2}: ', grafo.haAresta(1, 2))
-print('Resposta da Função peso para o Conjunto {1,2}: ', grafo.peso(1, 2))
+print('Resposta da Função peso para o Conjunto {1,2}: ', grafo.peso(2, 1))
+grafo.buscaEmLargura(1)
 grafo.buscaCicloEuleriano()
-# grafo.dijkstra(1)
+grafo.dijkstra(1)
 grafo.floydWarshall()
