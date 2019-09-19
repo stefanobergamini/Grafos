@@ -1,5 +1,6 @@
 import re
 
+
 class Grafo:
     vertices = {}
     arestas = {}
@@ -135,10 +136,10 @@ class Grafo:
                     C.update({i: {j: False}})
         ciclo = self.buscaSubCicloEuleriano(1, C)
         if ciclo[0] == False:
-            print('Resposta da Função buscaCicloEuleriano: ')
+            print('\nResposta da Função buscaCicloEuleriano: ')
             print('0')
         else:
-            print('Resposta da Função buscaCicloEuleriano: ')
+            print('\nResposta da Função buscaCicloEuleriano: ')
             print('1')
             print(str(ciclo[1]))
 
@@ -152,31 +153,30 @@ class Grafo:
 
         CDA[vertice]['c'] = True
         CDA[vertice]['d'] = 0
-        unvisited.pop(vertice)
 
         while len(unvisited) > 0:
-            u = min({(v, unvisited[v]['d']) for v in unvisited})
+            u = min({(v, unvisited[v]['d']) for v in unvisited})[0]
             unvisited.pop(u)
             CDA[u]['c'] = True
 
-            for v in vizinhos(u):
+            for v in self.vizinhos(u):
                 if (CDA[v]['c'] == False):
-                    if (CDA[v]['d'] > CDA[u]['d'] + peso(u, v)):
-                        CDA[v].update({d: CDA[u]['d'] + peso(u, v), a: u})
-        
-        path = []
+                    if (CDA[v]['d'] > CDA[u]['d'] + self.peso(u, v)):
+                        CDA[v].update(
+                            {'d': CDA[u]['d'] + self.peso(u, v), 'a': u})
+
+        paths = {}
         for i in CDA:
-            dist = 0
-            if (CDA[i]['d'] == dist):
-                path.append(CDA[i]['d'])
-                dist += 1
-                    
-        print(list(path))
-   
-            
-
+            path = i
+            paths.update({i: [[], 0]})  # Caminho e a distancia do caminho
+            while path:
+                paths[i][0].append(path)
+                path = CDA[path]['a']
+            paths[i][1] = CDA[i]['d']
         
-
+        print('\nResposta Função Djikstra')
+        for i in paths:
+            print(i,':', ','.join([str(i) for i in paths[i][0][::-1]]), ';' , 'd=',paths[i][1])
 
     def ler(self):
         file = open('./grafos/ContemCicloEuleriano.net')
@@ -204,7 +204,8 @@ print('Resposta da Função qtdArestas: ', grafo.qtdArestas())
 print('Resposta da Função grau para o Vertice 2: ', grafo.grau(2))
 print('Resposta da Função rotulo para o Vertice 2: ', grafo.rotulo(2))
 print('Resposta da Função vizinhos para o vertice 2: ', grafo.vizinhos(2))
-print('Resposta da Função haAresta para o Conjunto {1,2}: ', grafo.haAresta(1, 2))
+print(
+    'Resposta da Função haAresta para o Conjunto {1,2}: ', grafo.haAresta(1, 2))
 print('Resposta da Função peso para o Conjunto {1,2}: ', grafo.peso(1, 2))
 grafo.buscaEmLargura(1)
 grafo.buscaCicloEuleriano()
