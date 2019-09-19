@@ -4,10 +4,12 @@ import re
 class Grafo:
     vertices = {}
     arestas = {}
+    dirigido = False
     # Estrutura de Arestas é da origem do vertice ate o proximo Exemplo:  1 : { 133 : 1.0 }
 
-    def __init__(self):
+    def __init__(self, dirigido):
         self.ler()
+        self.dirigido = dirigido
 
     def qtdVertices(self):
         return len(self.vertices)
@@ -41,9 +43,19 @@ class Grafo:
         return sorted(vizinhos)
 
     def haAresta(self, vertice1, vertice2):
-        if self.arestas.get(vertice1, False):
-            return self.arestas.get(vertice1, False).get(vertice2, False)
-        else:
+        if (self.dirigido):
+            if self.arestas.get(vertice1, False):
+                if self.arestas.get(vertice1, False).get(vertice2, False):
+                    return True
+            elif self.arestas.get(vertice2, False):
+                    if self.arestas.get(vertice2, False).get(vertice1, False):
+                        return True
+            else:
+                return False
+        elif self.arestas.get(vertice1, False):
+            if self.arestas.get(vertice1, False).get(vertice2, False):
+                return True
+        else:    
             return False
 
     def peso(self, vertice1, vertice2):
@@ -182,20 +194,21 @@ class Grafo:
         # fill matrix with inf values
         for i in self.vertices:
             for j in self.vertices:
-                if (i == j or (not haAresta(i, j))):
-                    dist[i][j] = float('inf')
+                if (i == j):
+                    dist.update({i: {j: {'d': 0}}}) 
+                elif (not self.haAresta(i, j)):
+                    dist.update({i: {j: {'d': float('inf')}}}) 
                 else:
-                    dist[i][j] = peso(i, j)
+                    dist.update({i: {j: {'d': self.peso(i, j)}}})
 
         # updating values with min of distances
         for n in self.vertices:
             for i in self.vertices:
                 for j in self.vertices:
-                    dist[i][j] = min(dist[i][j], dist[i][n] + dist[n][j])
+                    dist[i][j]['d'] = min(dist[i][j]['d'], (dist[i][n]['d'] + dist[n][j]['d']))
 
-            
     def ler(self):
-        #Modificar os grafos para cada Algoritmo
+        # Modificar os grafos para cada Algoritmo
         file = open('./grafos/fln_pequena.net')
         infos = file.readlines()
         qtdVertices = int(re.search(r"[0-9]+", infos[0]).group())
@@ -215,14 +228,15 @@ class Grafo:
         file.close()
 
 
-grafo = Grafo()
-print('Resposta da Função qtdVertices: ', grafo.qtdVertices())
-print('Resposta da Função qtdArestas: ', grafo.qtdArestas())
-print('Resposta da Função grau para o Vertice 2: ', grafo.grau(2))
-print('Resposta da Função rotulo para o Vertice 2: ', grafo.rotulo(2))
-print('Resposta da Função vizinhos para o vertice 2: ', grafo.vizinhos(2))
-print('Resposta da Função haAresta para o Conjunto {1,2}: ', grafo.haAresta(1, 2))
-print('Resposta da Função peso para o Conjunto {1,2}: ', grafo.peso(1, 2))
-grafo.buscaEmLargura(1)
-grafo.buscaCicloEuleriano()
-grafo.dijkstra(1)
+grafo = Grafo(False)
+# print('Resposta da Função qtdVertices: ', grafo.qtdVertices())
+# print('Resposta da Função qtdArestas: ', grafo.qtdArestas())
+# print('Resposta da Função grau para o Vertice 2: ', grafo.grau(2))
+# print('Resposta da Função rotulo para o Vertice 2: ', grafo.rotulo(2))
+# print('Resposta da Função vizinhos para o vertice 2: ', grafo.vizinhos(2))
+# print('Resposta da Função haAresta para o Conjunto {1,2}: ', grafo.haAresta(1, 2))
+# print('Resposta da Função peso para o Conjunto {1,2}: ', grafo.peso(1, 2))
+# grafo.buscaEmLargura(1)
+# grafo.buscaCicloEuleriano()
+# grafo.dijkstra(1)
+grafo.floydWarshall()
