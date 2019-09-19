@@ -86,7 +86,6 @@ class Grafo:
             # Só prossegue se existir uma aresta não-visitada conectada ao Ciclo.
             if C.get(Ciclo[-1], False) == False:
                 # Caso não tenha no exemplo de {2 : n : False}, procurar por {n: 2 : False} Obs: São arestas e não arcos
-
                 # Variavel Auxiliar para saber se encontrou alguma aresta livre
                 aux = False
                 for i in C:
@@ -158,13 +157,11 @@ class Grafo:
             u = min({(v, unvisited[v]['d']) for v in unvisited})[0]
             unvisited.pop(u)
             CDA[u]['c'] = True
-
             for v in self.vizinhos(u):
                 if (CDA[v]['c'] == False):
                     if (CDA[v]['d'] > CDA[u]['d'] + self.peso(u, v)):
                         CDA[v].update(
                             {'d': CDA[u]['d'] + self.peso(u, v), 'a': u})
-
         paths = {}
         for i in CDA:
             path = i
@@ -178,15 +175,17 @@ class Grafo:
         for i in paths:
             print(i,':', ','.join([str(i) for i in paths[i][0][::-1]]), ';' , 'd=',paths[i][1])
 
+
     def ler(self):
-        file = open('./grafos/ContemCicloEuleriano.net')
+        #Modificar os grafos para cada Algoritmo
+        file = open('./grafos/fln_pequena.net')
         infos = file.readlines()
         qtdVertices = int(re.search(r"[0-9]+", infos[0]).group())
         vertices = infos[1: qtdVertices + 1]
         edges = infos[qtdVertices + 2:]
         for i in range(len(vertices)):
             self.vertices.update(
-                {i + 1: re.search(r"\"([^0-9]+)\"$", vertices[i]).group().replace('"', '')})
+                {i + 1: re.search(r"\"([^0-9]+)|([0-9]+)\"$", vertices[i]).group().replace('"', '')})
         for i in range(len(edges)):
             temp = edges[i].replace('\n', '').split(' ')
             if self.arestas.get(int(temp[0]), False):
@@ -204,8 +203,7 @@ print('Resposta da Função qtdArestas: ', grafo.qtdArestas())
 print('Resposta da Função grau para o Vertice 2: ', grafo.grau(2))
 print('Resposta da Função rotulo para o Vertice 2: ', grafo.rotulo(2))
 print('Resposta da Função vizinhos para o vertice 2: ', grafo.vizinhos(2))
-print(
-    'Resposta da Função haAresta para o Conjunto {1,2}: ', grafo.haAresta(1, 2))
+print('Resposta da Função haAresta para o Conjunto {1,2}: ', grafo.haAresta(1, 2))
 print('Resposta da Função peso para o Conjunto {1,2}: ', grafo.peso(1, 2))
 grafo.buscaEmLargura(1)
 grafo.buscaCicloEuleriano()
