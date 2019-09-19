@@ -175,7 +175,24 @@ class Grafo:
         for i in paths:
             print(i,':', ','.join([str(i) for i in paths[i][0][::-1]]), ';' , 'd=',paths[i][1])
 
+    def floydWarshall(self):
+        dist = {}
 
+        # fill matrix with inf values
+        for i in self.vertices:
+            for j in self.vertices:
+                if (i == j or (not haAresta(i, j))):
+                    dist[i][j] = float('inf')
+                else:
+                    dist[i][j] = peso(i, j)
+
+        # updating values with min of distances
+        for n in self.vertices:
+            for i in self.vertices:
+                for j in self.vertices:
+                    dist[i][j] = min(dist[i][j], dist[i][n] + dist[n][j])
+
+            
     def ler(self):
         #Modificar os grafos para cada Algoritmo
         file = open('./grafos/fln_pequena.net')
