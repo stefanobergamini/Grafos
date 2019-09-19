@@ -205,8 +205,9 @@ class Grafo:
         for n in self.vertices:
             for i in self.vertices:
                 for j in self.vertices:
-                    if dist[i][j]['d'] > dist[i][k]['d'] + dist[k][j]['d']:
+                    if dist[i][j]['d'] > dist[i][n]['d'] + dist[n][j]['d']:
                         dist[i][j]['d'] = (dist[i][n]['d'] + dist[n][j]['d'])
+
 
     def ler(self):
         # Modificar os grafos para cada Algoritmo
@@ -237,7 +238,6 @@ print('Resposta da Função rotulo para o Vertice 2: ', grafo.rotulo(2))
 print('Resposta da Função vizinhos para o vertice 2: ', grafo.vizinhos(2))
 print('Resposta da Função haAresta para o Conjunto {1,2}: ', grafo.haAresta(1, 2))
 print('Resposta da Função peso para o Conjunto {1,2}: ', grafo.peso(1, 2))
-grafo.buscaEmLargura(1)
 grafo.buscaCicloEuleriano()
-grafo.dijkstra(1)
+# grafo.dijkstra(1)
 grafo.floydWarshall()
