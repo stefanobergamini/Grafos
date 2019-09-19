@@ -205,7 +205,8 @@ class Grafo:
         for n in self.vertices:
             for i in self.vertices:
                 for j in self.vertices:
-                    dist[i][j]['d'] = min(dist[i][j]['d'], (dist[i][n]['d'] + dist[n][j]['d']))
+                    if dist[i][j]['d'] > dist[i][k]['d'] + dist[k][j]['d']:
+                        dist[i][j]['d'] = (dist[i][n]['d'] + dist[n][j]['d'])
 
     def ler(self):
         # Modificar os grafos para cada Algoritmo
