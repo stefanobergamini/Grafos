@@ -154,7 +154,8 @@ class Grafo:
         CDA[vertice]['d'] = 0
 
         while len(unvisited) > 0:
-            u = min({(v, unvisited[v]['d']) for v in unvisited})[0]
+            # precisa de um lambda para que a função min compare só o segundo argumento
+            u = min(((v, CDA[v]['d']) for v in unvisited), key = lambda t: t[1])[0]
             unvisited.pop(u)
             CDA[u]['c'] = True
             for v in self.vizinhos(u):
