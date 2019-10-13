@@ -95,10 +95,16 @@ class Grafo:
 
     def componenteFortementeConexas(self):
         CTFA = self.dfs()
+        print(CTFA)
         arestasT = {}
         for u in self.vertices:
-            if self.arestas.get(u):
-                print(u)
+            for v in self.arestas[u]:
+                if arestasT.get(v):
+                    arestasT[v].update({u})
+                else:
+                    arestasT.update({v: {u}})
+        
+        
 
 
     def dfs(self):
@@ -122,7 +128,6 @@ class Grafo:
         tempo = tempo + 1
         CTFA[v]['f'] = tempo
         return CTFA
-
 
 grafo = Grafo()
 grafo.componenteFortementeConexas()
