@@ -75,7 +75,7 @@ class Grafo:
 
     def ler(self):
         # Modificar os grafos para cada Algoritmo
-        file = open('./grafos/dirigido1.net')
+        file = open('./grafos/simpsons_amizades1.net')
         infos = file.readlines()
         qtdVertices = int(re.search(r"[0-9]+", infos[0]).group())
         vertices = infos[1: qtdVertices + 1]
@@ -98,7 +98,7 @@ class Grafo:
         arestasT = {}
         for u in self.vertices:
             if self.arestas.get(u):
-                print(self.arestas.get(u))
+                print(u)
 
 
     def dfs(self):
