@@ -9,70 +9,6 @@ class Grafo:
     def __init__(self):
         self.ler()
 
-    def qtdVertices(self):
-        return len(self.vertices)
-
-    def qtdArestas(self):
-        arestas = 0
-        for i in self.arestas.values():
-            arestas += len(i)
-        return arestas
-
-    def grau(self, vertice):
-        grau = 0
-        if self.arestas.get(vertice, False):
-            grau = len(self.arestas.get(vertice, False))
-        for i in self.vertices:
-            if i != vertice and self.arestas.get(i, False) and self.arestas[i].get(vertice, False):
-                grau += 1
-        return grau
-
-    def rotulo(self, vertice):
-        return self.vertices.get(vertice, False)
-
-    def vizinhos(self, vertice):
-        if self.arestas.get(vertice, False):
-            vizinhos = list(self.arestas[vertice].keys())
-        else:
-            vizinhos = []
-        for i in self.vertices:
-            if self.arestas.get(i, False) and vertice in list(self.arestas.get(i, False).keys()):
-                vizinhos.append(i)
-        return sorted(vizinhos)
-
-    def haAresta(self, vertice1, vertice2):
-        if self.arestas.get(vertice1, False):
-            if self.arestas.get(vertice1, False).get(vertice2, False):
-                return True
-            else:
-                return False
-        elif self.arestas.get(vertice2, False):
-            if self.arestas.get(vertice2, False).get(vertice1, False):
-                return True
-            else:
-                return False
-        else:
-            return False
-
-    def peso(self, vertice1, vertice2):
-        if self.arestas.get(vertice1, False):
-            if self.arestas.get(vertice1).get(vertice2, False):
-                return self.arestas.get(vertice1).get(vertice2)
-            elif self.arestas.get(vertice2, False):
-                if self.arestas.get(vertice2).get(vertice1, False):
-                    return self.arestas.get(vertice2).get(vertice1)
-                else:
-                    return float("inf")
-            else:
-                return float("inf")
-        elif self.arestas.get(vertice2, False):
-            if self.arestas.get(vertice2).get(vertice1, False):
-                return self.arestas.get(vertice2).get(vertice1)
-            else:
-                return float("inf")
-        else:
-            return float("inf")
-
     def ler(self):
         # Modificar os grafos para cada Algoritmo
         file = open('./grafos/simpsons_amizades1.net')
@@ -95,7 +31,6 @@ class Grafo:
 
     def componenteFortementeConexas(self):
         CTFA = self.dfs()
-        print(CTFA)
         arestasT = {}
         for u in self.vertices:
             for v in self.arestas[u]:
@@ -103,9 +38,17 @@ class Grafo:
                     arestasT[v].update({u})
                 else:
                     arestasT.update({v: {u}})
+        CTFAALTARADO = self.dfsAdptado(CTFA, arestasT)
         
-        
-
+    def dfsAdptado(self, CTFA, arestasT):
+        for v in self.vertices:
+            CTFA.update(
+                {v: {'c': False, 't': float('inf'), 'f': float('inf'), 'a': None}})
+        tempo = 0
+        for u in self.vertices:
+            if CTFA[u]['c'] == False:
+                CTFA = self.dfsVisit(u, CTFA, tempo, arestasT)
+        return CTFA
 
     def dfs(self):
         CTFA = {}
@@ -115,16 +58,16 @@ class Grafo:
         tempo = 0
         for u in self.vertices:
             if CTFA[u]['c'] == False:
-                CTFA = self.dfsVisit(u, CTFA, tempo)
+                CTFA = self.dfsVisit(u, CTFA, tempo, self.arestas)
         return CTFA
 
-    def dfsVisit(self, v, CTFA, tempo):
+    def dfsVisit(self, v, CTFA, tempo, arestas):
         tempo = tempo + 1
         CTFA[v].update({'c': True, 't': tempo})
-        for u in self.arestas.get(v, []):
+        for u in arestas.get(v, []):
             if CTFA[u]['c'] == False:
                 CTFA[u]['a'] = v
-                self.dfsVisit(u, CTFA, tempo)
+                self.dfsVisit(u, CTFA, tempo, arestas)
         tempo = tempo + 1
         CTFA[v]['f'] = tempo
         return CTFA
