@@ -71,6 +71,28 @@ class Grafo:
         tempo = tempo + 1
         CTFA[v]['f'] = tempo
         return CTFA
+    
+    def dfsOT(self)
+        CTF = {}
+        for v in self.vertices:
+            CTF.update(
+                v: {'c': False, 't': float('inf'), 'f': float('inf')})
+        tempo = 0
+        O = []
+        for u in self.vertices
+            if CTF[u]['c'] == False:
+                CTF = self.dfsVisitOT(u, CTF, tempo, O)
+        return O
+
+    def dfsVisitOT(self, v, CTF, tempo, O)
+        tempo = tempo + 1
+        CTF[v].update({'c': True}, 't': tempo)
+        for u in arestas.get(v, []):
+            if CTF[u]['c'] == False:
+                self.dfsVisitOT(u, CTF, self.arestas, tempo)
+        tempo = tempo + 1
+        CTF[v].update({'f': tempo})
+        O.insert(0, v)
 
 grafo = Grafo()
 grafo.componenteFortementeConexas()
