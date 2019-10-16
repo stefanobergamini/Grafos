@@ -9,6 +9,9 @@ class Grafo:
     def __init__(self):
         self.ler()
 
+    def rotulo(self, vertice):
+        return self.vertices.get(vertice, False)
+
     def ler(self):
         # Modificar os grafos para cada Algoritmo
         file = open('./grafos/simpsons_amizades1.net')
@@ -18,7 +21,7 @@ class Grafo:
         arcs = infos[qtdVertices + 2:]
         for i in range(len(vertices)):
             self.vertices.update(
-                {i + 1: re.search(r"([^0-9]+)|([0-9]+)", vertices[i]).group().replace('"', '')})
+                {i + 1: re.search(r"\"?([^0-9]+)|([0-9]+)\"?$", vertices[i]).group().replace('"', '').replace('\n','')})
         for i in range(len(arcs)):
             temp = arcs[i].replace('\n', '').split(' ')
             if self.arestas.get(int(temp[0]), False):
@@ -72,27 +75,34 @@ class Grafo:
         CTFA[v]['f'] = tempo
         return CTFA
     
-    def dfsOT(self)
+    # Ordem Topologica
+    def OrdemTopologica(self):
+        O = []
+        O = self.dfsOT()
+        ordemTopologica = [self.rotulo(i) for i in O]
+        return ordemTopologica
+
+    def dfsOT(self):
         CTF = {}
         for v in self.vertices:
-            CTF.update(
-                v: {'c': False, 't': float('inf'), 'f': float('inf')})
+            CTF.update({ v: {'c': False, 't': float('inf'), 'f': float('inf')}} )
         tempo = 0
         O = []
-        for u in self.vertices
+        for u in self.vertices:
             if CTF[u]['c'] == False:
-                CTF = self.dfsVisitOT(u, CTF, tempo, O)
+                self.dfsVisitOT(u, CTF, tempo, O)
         return O
 
-    def dfsVisitOT(self, v, CTF, tempo, O)
+    def dfsVisitOT(self, v, CTF, tempo, O):
         tempo = tempo + 1
-        CTF[v].update({'c': True}, 't': tempo)
-        for u in arestas.get(v, []):
+        CTF[v].update({'c': True, 't': tempo})
+        for u in self.arestas.get(v, []):
             if CTF[u]['c'] == False:
-                self.dfsVisitOT(u, CTF, self.arestas, tempo)
+                self.dfsVisitOT(u, CTF, tempo, O)
         tempo = tempo + 1
         CTF[v].update({'f': tempo})
         O.insert(0, v)
 
 grafo = Grafo()
-grafo.componenteFortementeConexas()
+# grafo.componenteFortementeConexas()
+print(grafo.OrdemTopologica())
