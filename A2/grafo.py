@@ -14,14 +14,14 @@ class Grafo:
 
     def ler(self):
         # Modificar os grafos para cada Algoritmo
-        file = open('./grafos/simpsons_amizades1.net')
+        file = open('./grafos/dirigido1.net')
         infos = file.readlines()
         qtdVertices = int(re.search(r"[0-9]+", infos[0]).group())
         vertices = infos[1: qtdVertices + 1]
         arcs = infos[qtdVertices + 2:]
         for i in range(len(vertices)):
             self.vertices.update(
-                {i + 1: re.search(r"\"?([^0-9]+)|([0-9]+)\"?$", vertices[i]).group().replace('"', '').replace('\n','')})
+                {i + 1: re.search(r"\"?([a-zA-Z]+)([^0-9]+)|([0-9]+)\"?$", vertices[i]).group().replace('"', '').replace('\n','')})
         for i in range(len(arcs)):
             temp = arcs[i].replace('\n', '').split(' ')
             if self.arestas.get(int(temp[0]), False):
@@ -32,27 +32,22 @@ class Grafo:
                     {int(temp[0]): {int(temp[1]): float(temp[2])}})
         file.close()
 
+    # Componente Fortemente Conexos INCOMPLETO
     def componenteFortementeConexas(self):
         CTFA = self.dfs()
         arestasT = {}
         for u in self.vertices:
-            for v in self.arestas[u]:
-                if arestasT.get(v):
+            for v in self.arestas.get(u, []):
+                if arestasT.get(v, False):
                     arestasT[v].update({u})
                 else:
                     arestasT.update({v: {u}})
-        CTFAALTARADO = self.dfsAdptado(CTFA, arestasT)
+        self.arestas = arestasT
+        #primeiro valor da Tupla valor de F a qual vai ser organizado de maior para menor
+        ordemValoresDeF = (sorted([(CTFA[i]['f'],i) for i in CTFA], reverse = True))
+        CTFAALTARADO = self.dfsAdptado(CTFA, ordemValoresDeF)
+        return CTFAALTARADO
         
-    def dfsAdptado(self, CTFA, arestasT):
-        for v in self.vertices:
-            CTFA.update(
-                {v: {'c': False, 't': float('inf'), 'f': float('inf'), 'a': None}})
-        tempo = 0
-        for u in self.vertices:
-            if CTFA[u]['c'] == False:
-                CTFA = self.dfsVisit(u, CTFA, tempo, arestasT)
-        return CTFA
-
     def dfs(self):
         CTFA = {}
         for v in self.vertices:
@@ -61,19 +56,29 @@ class Grafo:
         tempo = 0
         for u in self.vertices:
             if CTFA[u]['c'] == False:
-                CTFA = self.dfsVisit(u, CTFA, tempo, self.arestas)
+                self.dfsVisit(u, CTFA, tempo)
         return CTFA
 
-    def dfsVisit(self, v, CTFA, tempo, arestas):
+    def dfsVisit(self, v, CTFA, tempo):
         tempo = tempo + 1
         CTFA[v].update({'c': True, 't': tempo})
-        for u in arestas.get(v, []):
+        for u in self.arestas.get(v, []):
             if CTFA[u]['c'] == False:
                 CTFA[u]['a'] = v
-                self.dfsVisit(u, CTFA, tempo, arestas)
+                self.dfsVisit(u, CTFA, tempo)
         tempo = tempo + 1
         CTFA[v]['f'] = tempo
+
+    def dfsAdptado(self, CTFA, ordemValoresDeF):
+        for v in self.vertices:
+            CTFA.update(
+                {v: {'c': False, 't': float('inf'), 'f': float('inf'), 'a': None}})
+        tempo = 0
+        for u in ordemValoresDeF:
+            if CTFA[u[1]]['c'] == False:
+                self.dfsVisit(u[1], CTFA, tempo)
         return CTFA
+
     
     # Ordem Topologica
     def OrdemTopologica(self):
@@ -104,5 +109,5 @@ class Grafo:
         O.insert(0, v)
 
 grafo = Grafo()
-# grafo.componenteFortementeConexas()
-print(grafo.OrdemTopologica())
+print("Resposta Fortemente Conexo Incompleto: \n",grafo.componenteFortementeConexas(), "\n")
+print("Resposta Ordem Topologica: \n", grafo.OrdemTopologica())
