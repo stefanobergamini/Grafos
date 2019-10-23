@@ -11,10 +11,20 @@ class Grafo:
 
     def rotulo(self, vertice):
         return self.vertices.get(vertice, False)
+    
+    def vizinhos(self, vertice):
+        if self.arestas.get(vertice, False):
+            vizinhos = list(self.arestas[vertice].keys())
+        else:
+            vizinhos = []
+        for i in self.vertices:
+            if self.arestas.get(i, False) and vertice in list(self.arestas.get(i, False).keys()):
+                vizinhos.append(i)
+        return sorted(vizinhos)
 
     def ler(self):
         # Modificar os grafos para cada Algoritmo
-        file = open('./grafos/dirigido1.net')
+        file = open('./grafos/agm_tiny.net')
         infos = file.readlines()
         qtdVertices = int(re.search(r"[0-9]+", infos[0]).group())
         vertices = infos[1: qtdVertices + 1]
@@ -42,10 +52,10 @@ class Grafo:
                     arestasT[v].update({u})
                 else:
                     arestasT.update({v: {u}})
-        self.arestas = arestasT
-        #primeiro valor da Tupla valor de F a qual vai ser organizado de maior para menor
+        arestasT
+        #primeiro valor da Tupla valor de F a qual vai ser organizado de maior para menor (F, V) v do vertice
         ordemValoresDeF = (sorted([(CTFA[i]['f'],i) for i in CTFA], reverse = True))
-        CTFAALTARADO = self.dfsAdptado(CTFA, ordemValoresDeF)
+        CTFAALTARADO = self.dfsAdptado(CTFA, ordemValoresDeF, arestasT)
         return CTFAALTARADO
         
     def dfs(self):
@@ -56,27 +66,27 @@ class Grafo:
         tempo = 0
         for u in self.vertices:
             if CTFA[u]['c'] == False:
-                self.dfsVisit(u, CTFA, tempo)
+                self.dfsVisit(u, CTFA, tempo, self.arestas)
         return CTFA
 
-    def dfsVisit(self, v, CTFA, tempo):
+    def dfsVisit(self, v, CTFA, tempo, arestas):
         tempo = tempo + 1
         CTFA[v].update({'c': True, 't': tempo})
-        for u in self.arestas.get(v, []):
+        for u in arestas.get(v, []):
             if CTFA[u]['c'] == False:
                 CTFA[u]['a'] = v
-                self.dfsVisit(u, CTFA, tempo)
+                self.dfsVisit(u, CTFA, tempo, arestas)
         tempo = tempo + 1
         CTFA[v]['f'] = tempo
 
-    def dfsAdptado(self, CTFA, ordemValoresDeF):
+    def dfsAdptado(self, CTFA, ordemValoresDeF, arestas):
         for v in self.vertices:
             CTFA.update(
                 {v: {'c': False, 't': float('inf'), 'f': float('inf'), 'a': None}})
         tempo = 0
         for u in ordemValoresDeF:
             if CTFA[u[1]]['c'] == False:
-                self.dfsVisit(u[1], CTFA, tempo)
+                self.dfsVisit(u[1], CTFA, tempo, arestas)
         return CTFA
 
     
@@ -108,6 +118,31 @@ class Grafo:
         CTF[v].update({'f': tempo})
         O.insert(0, v)
 
+    #Algoritmo de Prim
+    def algoritmoPrim(self):
+        AK = {}
+        Q = {}
+        for v in self.vertices:
+            if v == 1:
+                AK.update({ v: {'a': None, 'k': 0}} )
+            else:
+                AK.update({ v: {'a': None, 'k': float('inf')}} )
+            Q.update({v: AK[v]['k']})
+
+        while Q:
+            u = min(((i, Q[i]) for i in Q ), key = lambda t: t[1])[0]
+            Q.pop(u)
+            for v in self.vizinhos(u):
+                if Q.get(v, False) and self.arestas[u][v] < AK[v]['k']:
+                    AK[v]['a'] = u
+                    AK[v]['k'] = self.arestas[u][v]
+        pesoTotal = sum(AK[i]['k'] for i in AK)
+        print("\nResposta Algoritmo de Prim:")
+        print(pesoTotal)
+        print(', '.join([str(AK[i]['a']) + '-' + str(i) for i in AK]))
+
+
 grafo = Grafo()
-print("Resposta Fortemente Conexo Incompleto: \n",grafo.componenteFortementeConexas(), "\n")
-print("Resposta Ordem Topologica: \n", grafo.OrdemTopologica())
+print("Resposta Componente Fortemente Conexa: \n", grafo.componenteFortementeConexas())
+print("\n Resposta Ordem Topologica: \n", grafo.OrdemTopologica())
+grafo.algoritmoPrim()
