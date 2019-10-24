@@ -43,88 +43,49 @@ class Grafo:
         file.close()
 
     # Componente Fortemente Conexos INCOMPLETO
-    # def componenteFortementeConexas(self):
-    #     CTFA = self.dfs()
-    #     arestasT = {}
-    #     for u in self.vertices:
-    #         for v in self.arestas.get(u, []):
-    #             if arestasT.get(v, False):
-    #                 arestasT[v].update({u})
-    #             else:
-    #                 arestasT.update({v: {u}})
-    #     arestasT
-    #     #primeiro valor da Tupla valor de F a qual vai ser organizado de maior para menor (F, V) v do vertice
-    #     ordemValoresDeF = (sorted([(CTFA[i]['f'],i) for i in CTFA], reverse = True))
-    #     CTFAALTARADO = self.dfsAdptado(CTFA, ordemValoresDeF, arestasT)
-    #     return CTFAALTARADO
-        
-    # def dfs(self):
-    #     CTFA = {}
-    #     for v in self.vertices:
-    #         CTFA.update(
-    #             {v: {'c': False, 't': float('inf'), 'f': float('inf'), 'a': None}})
-    #     tempo = 0
-    #     for u in self.vertices:
-    #         if CTFA[u]['c'] == False:
-    #             self.dfsVisit(u, CTFA, tempo, self.arestas)
-    #     return CTFA
-
-    # def dfsVisit(self, v, CTFA, tempo, arestas):
-    #     tempo = tempo + 1
-    #     for u in arestas.get(v, []):
-    #         if CTFA[u]['c'] == False:
-    #             CTFA[u]['a'] = v
-    #             self.dfsVisit(u, CTFA, tempo, arestas)
-    #     tempo = tempo + 1
-    #     CTFA[v]['f'] = tempo
-
-    # def dfsAdptado(self, CTFA, ordemValoresDeF, arestas):
-    #     for v in self.vertices:
-    #         CTFA.update(
-    #             {v: {'c': False, 't': float('inf'), 'f': float('inf'), 'a': None}})
-    #     tempo = 0
-    #     for u in ordemValoresDeF:
-    #         if CTFA[u[1]]['c'] == False:
-    #             self.dfsVisit(u[1], CTFA, tempo, arestas)
-    #     return CTFA
-        
-    def compFortementeConexas(self):
-        CTAF = self.dfs()
-        AT = {}
+    def componenteFortementeConexas(self):
+        CTFA = self.dfs()
+        arestasT = {}
         for u in self.vertices:
-            for v in self.vertices:
-                AT[v].update({u})
-        grafoTransp = Grafo(self.vertices, AT)
-        CTAFTransp = self.dfsAdaptado(grafoTransp)
-        return CTAFTransp['a']
-
-    def dfsAdaptado(self, grafo)
+            for v in self.arestas.get(u, []):
+                arestasT[v].update({u})
+        #primeiro valor da Tupla valor de F a qual vai ser organizado de maior para menor (F, V) v do vertice
+        ordemValoresDeF = (sorted([(CTFA[i]['f'],i) for i in CTFA], reverse = True))
+        CTFAALTARADO = self.dfsAdptado(CTFA, ordemValoresDeF, arestasT)
+        return CTFAALTARADO
+        
+    def dfs(self):
         CTFA = {}
         for v in self.vertices:
             CTFA.update(
                 {v: {'c': False, 't': float('inf'), 'f': float('inf'), 'a': None}})
         tempo = 0
-        ordemValDeF = (sorted([(CTFA[i]['f'],i) for i in CTFA], reverse = True))
-        for u in ordemValDeF:
-            if CTFA[u[1]]['c'] == False:            
-                self.dfsVisit(grafo, u, C, T, F, A, tempo)
+        for u in self.vertices:
+            if CTFA[u]['c'] == False:
+                # chama o visit?
+                self.dfsVisit(u, CTFA, tempo, self.arestas)
         return CTFA
-    
-    def dfsVisit(self, grafo, u, C, T, F, A, tempo):
-        C[u] = True
+
+    def dfsVisit(self, v, CTFA, tempo, arestas):
         tempo = tempo + 1
-        T[u] = tempo
-        for v in arestas.get(v, []):
-            if C[v] == False:
-                A[v] = u
-                self.dfsVisit(grafo, v, C, T, A, F, tempo)
+        for u in arestas.get(v, []):
+            if CTFA[u]['c'] == False:
+                CTFA[u]['a'] = v
+                self.dfsVisit(u, CTFA, tempo, arestas)
         tempo = tempo + 1
-        F[u] = tempo
+        CTFA[v]['f'] = tempo
 
-
-
-
-    
+    def dfsAdptado(self, CTFA, ordemValoresDeF, arestas):
+        for v in self.vertices:
+            CTFA.update(
+                {v: {'c': False, 't': float('inf'), 'f': float('inf'), 'a': None}})
+        tempo = 0
+        for u in ordemValoresDeF:
+            if CTFA[u[1]]['c'] == False:
+                self.dfsVisit(u[1], CTFA, tempo, arestas)
+        return CTFA
+        
+  
     # Ordem Topologica
     def OrdemTopologica(self):
         O = []
@@ -178,6 +139,6 @@ class Grafo:
 
 
 grafo = Grafo()
-print("Resposta Componente Fortemente Conexa: \n", grafo.componenteFortementeConexas())
+print("Resposta Componente Fortemente Conexa: \n", grafo.compFortementeConexas())
 print("\n Resposta Ordem Topologica: \n", grafo.OrdemTopologica())
 grafo.algoritmoPrim()
