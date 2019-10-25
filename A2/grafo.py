@@ -48,7 +48,10 @@ class Grafo:
         arestasT = {}
         for u in self.vertices:
             for v in self.arestas.get(u, []):
-                arestasT[v].update({u})
+                if arestasT.get(v, False):
+                    arestasT[v].update({u})
+                else:
+                    arestasT.update({v: {u}})
         #primeiro valor da Tupla valor de F a qual vai ser organizado de maior para menor (F, V) v do vertice
         ordemValoresDeF = (sorted([(CTFA[i]['f'],i) for i in CTFA], reverse = True))
         CTFAALTARADO = self.dfsAdptado(CTFA, ordemValoresDeF, arestasT)
@@ -68,6 +71,8 @@ class Grafo:
 
     def dfsVisit(self, v, CTFA, tempo, arestas):
         tempo = tempo + 1
+        CTFA[v]['t'] = tempo
+        CTFA[v]['c'] = True
         for u in arestas.get(v, []):
             if CTFA[u]['c'] == False:
                 CTFA[u]['a'] = v
@@ -135,10 +140,11 @@ class Grafo:
         pesoTotal = sum(AK[i]['k'] for i in AK)
         print("\nResposta Algoritmo de Prim:")
         print(pesoTotal)
+        AK.pop(1)
         print(', '.join([str(AK[i]['a']) + '-' + str(i) for i in AK]))
 
 
 grafo = Grafo()
-print("Resposta Componente Fortemente Conexa: \n", grafo.compFortementeConexas())
+print("Resposta Componente Fortemente Conexa: \n", grafo.componenteFortementeConexas())
 print("\n Resposta Ordem Topologica: \n", grafo.OrdemTopologica())
 grafo.algoritmoPrim()
