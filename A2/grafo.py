@@ -62,7 +62,6 @@ class Grafo:
         tempo = 0
         for u in self.vertices:
             if CTFA[u]['c'] == False:
-                # chama o visit?
                 self.dfsVisit(u, CTFA, tempo, self.arestas)
         return CTFA
 
