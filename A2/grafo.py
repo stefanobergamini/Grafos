@@ -48,14 +48,14 @@ class Grafo:
         arestasT = {}
         for u in self.vertices:
             for v in self.arestas.get(u, []):
-                if arestasT.get(v, False):
-                    arestasT[v].update({u})
-                else:
-                    arestasT.update({v: {u}})
+                arestasT.update({v: {u}})
         #primeiro valor da Tupla valor de F a qual vai ser organizado de maior para menor (F, V) v do vertice
         ordemValoresDeF = (sorted([(CTFA[i]['f'],i) for i in CTFA], reverse = True))
-        CTFAALTARADO = self.dfsAdptado(CTFA, ordemValoresDeF, arestasT)
-        return CTFAALTARADO
+        CFTAALTERADO = self.dfsAdptado(CTFA, ordemValoresDeF, arestasT)
+        aT = {}
+        for i in CFTAALTERADO:
+            aT.update({i: {CFTAALTERADO[i]['a']}})
+        return aT
         
     def dfs(self):
         CTFA = {}
@@ -65,7 +65,6 @@ class Grafo:
         tempo = 0
         for u in self.vertices:
             if CTFA[u]['c'] == False:
-                # chama o visit?
                 self.dfsVisit(u, CTFA, tempo, self.arestas)
         return CTFA
 
