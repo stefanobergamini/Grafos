@@ -25,7 +25,7 @@ class Grafo:
 
     def ler(self):
         # Modificar os grafos para cada Algoritmo
-        file = open('./grafos/dirigido2.net')
+        file = open('./grafos/dirigido1.net')
         infos = file.readlines()
         qtdVertices = int(re.search(r"[0-9]+", infos[0]).group())
         vertices = infos[1: qtdVertices + 1]
@@ -55,8 +55,8 @@ class Grafo:
                     arestasT.update({v: {u}})
         #primeiro valor da Tupla valor de F a qual vai ser organizado de maior para menor (F, V) v do vertice
         ordemValoresDeF = (sorted([(CTFA[i]['f'],i) for i in CTFA], reverse = True))
-        CFTAALTERADO = self.dfsAdptado(CTFA, ordemValoresDeF, arestasT)
-        conjuntosFortemente = self.conjuntoFortemente(CFTAALTERADO)
+        CTFAALTERADO = self.dfsAdptado(CTFA, ordemValoresDeF, arestasT)
+        conjuntosFortemente = self.conjuntoFortemente(CTFAALTERADO)
         print("\nResposta Componente Fortemente Conexas:")
         for i in conjuntosFortemente:
             print(','.join([str(j) for j in i]))   
