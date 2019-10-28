@@ -24,7 +24,7 @@ class Grafo:
 
     def ler(self):
         # Modificar os grafos para cada Algoritmo
-        file = open('./grafos/agm_tiny.net')
+        file = open('./grafos/dirigido1.net')
         infos = file.readlines()
         qtdVertices = int(re.search(r"[0-9]+", infos[0]).group())
         vertices = infos[1: qtdVertices + 1]
@@ -42,7 +42,7 @@ class Grafo:
                     {int(temp[0]): {int(temp[1]): float(temp[2])}})
         file.close()
 
-    # Componente Fortemente Conexos INCOMPLETO
+    # Componente Fortemente Conexos
     def componenteFortementeConexas(self):
         CTFA = self.dfs()
         arestasT = {}
