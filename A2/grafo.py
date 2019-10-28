@@ -70,6 +70,8 @@ class Grafo:
 
     def dfsVisit(self, v, CTFA, tempo, arestas):
         tempo = tempo + 1
+        CTFA[v]['t'] = tempo
+        CTFA[v]['c'] = True
         for u in arestas.get(v, []):
             if CTFA[u]['c'] == False:
                 CTFA[u]['a'] = v
@@ -131,12 +133,19 @@ class Grafo:
             u = min(((i, Q[i]) for i in Q ), key = lambda t: t[1])[0]
             Q.pop(u)
             for v in self.vizinhos(u):
-                if Q.get(v, False) and self.arestas[u][v] < AK[v]['k']:
-                    AK[v]['a'] = u
-                    AK[v]['k'] = self.arestas[u][v]
-        pesoTotal = sum(AK[i]['k'] for i in AK)
+                if self.arestas.get(u, False) and self.arestas[u].get(v, False): 
+                    if Q.get(v, False) and self.arestas[u][v] < AK[v]['k']:
+                        AK[v]['a'] = u
+                        AK[v]['k'] = self.arestas[u][v]
+                        Q[v] = self.arestas[u][v]
+                elif self.arestas.get(v, False) and self.arestas[v].get(u, False):
+                    if Q.get(v, False) and self.arestas[v][u] < AK[v]['k']:
+                        AK[v]['a'] = u
+                        AK[v]['k'] = self.arestas[v][u]
+                        Q[v] = self.arestas[v][u]
         print("\nResposta Algoritmo de Prim:")
-        print(pesoTotal)
+        print(sum([AK[i]['k'] for i in AK]))
+        AK.pop(1)
         print(', '.join([str(AK[i]['a']) + '-' + str(i) for i in AK]))
 
 
