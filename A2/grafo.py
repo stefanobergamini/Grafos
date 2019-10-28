@@ -4,6 +4,7 @@ import re
 class Grafo:
     vertices = {}
     arestas = {}
+    tempo = 0
 
     # Estrutura de Arestas é da origem do vertice ate o proximo Exemplo:  1 : { 133 : 1.0 }
     def __init__(self):
@@ -24,7 +25,7 @@ class Grafo:
 
     def ler(self):
         # Modificar os grafos para cada Algoritmo
-        file = open('./grafos/dirigido1.net')
+        file = open('./grafos/dirigido2.net')
         infos = file.readlines()
         qtdVertices = int(re.search(r"[0-9]+", infos[0]).group())
         vertices = infos[1: qtdVertices + 1]
@@ -48,47 +49,65 @@ class Grafo:
         arestasT = {}
         for u in self.vertices:
             for v in self.arestas.get(u, []):
-                arestasT.update({v: {u}})
+                if arestasT.get(v, False):
+                    arestasT[v].update({u})
+                else:
+                    arestasT.update({v: {u}})
         #primeiro valor da Tupla valor de F a qual vai ser organizado de maior para menor (F, V) v do vertice
         ordemValoresDeF = (sorted([(CTFA[i]['f'],i) for i in CTFA], reverse = True))
         CFTAALTERADO = self.dfsAdptado(CTFA, ordemValoresDeF, arestasT)
-        aT = {}
-        for i in CFTAALTERADO:
-            aT.update({i: {CFTAALTERADO[i]['a']}})
-        return aT
+        conjuntosFortemente = self.conjuntoFortemente(CFTAALTERADO)
+        print("\nResposta Componente Fortemente Conexas:")
+        for i in conjuntosFortemente:
+            print(','.join([str(j) for j in i]))   
+
+    def conjuntoFortemente(self, CFTA):
+        Q = []
+        for i in CFTA:
+            Q.append(i)
+        conjuntosFortementes = []
+        for i in CFTA:
+            if Q.count(i) > 0:
+                conjunto = [i]
+                for j in CFTA:    
+                    if i != j and CFTA[i]['t'] < CFTA[j]['t'] and CFTA[i]['f'] > CFTA[j]['f'] and CFTA[j]['a']:
+                        conjunto.append(j)
+                        Q.remove(j)
+                if len(conjunto) > 1:
+                    conjuntosFortementes.append(conjunto)
+        return conjuntosFortementes
+
         
     def dfs(self):
         CTFA = {}
         for v in self.vertices:
             CTFA.update(
                 {v: {'c': False, 't': float('inf'), 'f': float('inf'), 'a': None}})
-        tempo = 0
         for u in self.vertices:
             if CTFA[u]['c'] == False:
-                self.dfsVisit(u, CTFA, tempo, self.arestas)
+                self.dfsVisit(u, CTFA, self.arestas)
         return CTFA
 
-    def dfsVisit(self, v, CTFA, tempo, arestas):
-        tempo = tempo + 1
-        CTFA[v]['t'] = tempo
+    def dfsVisit(self, v, CTFA, arestas):
+        self.tempo = self.tempo + 1
+        CTFA[v]['t'] = self.tempo
         CTFA[v]['c'] = True
         for u in arestas.get(v, []):
             if CTFA[u]['c'] == False:
                 CTFA[u]['a'] = v
-                self.dfsVisit(u, CTFA, tempo, arestas)
-        tempo = tempo + 1
-        CTFA[v]['f'] = tempo
+                self.dfsVisit(u, CTFA, arestas)
+        self.tempo = self.tempo + 1
+        CTFA[v]['f'] = self.tempo
 
     def dfsAdptado(self, CTFA, ordemValoresDeF, arestas):
         for v in self.vertices:
             CTFA.update(
                 {v: {'c': False, 't': float('inf'), 'f': float('inf'), 'a': None}})
-        tempo = 0
+        self.tempo = 0
         for u in ordemValoresDeF:
             if CTFA[u[1]]['c'] == False:
-                self.dfsVisit(u[1], CTFA, tempo, arestas)
-        return CTFA
-        
+                self.dfsVisit(u[1], CTFA, arestas)
+        return CTFA 
   
     # Ordem Topologica
     def OrdemTopologica(self):
@@ -150,6 +169,6 @@ class Grafo:
 
 
 grafo = Grafo()
-print("Resposta Componente Fortemente Conexa: \n", grafo.componenteFortementeConexas())
-print("\n Resposta Ordem Topologica: \n", grafo.OrdemTopologica())
+grafo.componenteFortementeConexas()
+print("\nResposta Ordem Topologica: \n", grafo.OrdemTopologica())
 grafo.algoritmoPrim()
