@@ -37,6 +37,62 @@ class Grafo:
                     Q.insert(0,v)
         return CA
 
+
+    #provavelmente ta tudo errado e tem q mudar muita coisa
+    # O algoritmo recebe o grafo nao dirigido e nao ponderado bipartido
+    def emparelhamento(self):
+        DMATE = {}
+        for i in self.vertices:
+            DMATE.update({i: {'d': float('inf'), 'mate': None}})
+        m = 0
+        while bfs('''nao sei o q enviar exatamente''') == True:
+            for x in self.vertices:
+                if DMATE[x].mate == None:
+                    if dfs('''nao sei o q enviar exatamente''') == True :
+                        m = m + 1
+        return (m, DMATE.mate)
+
+    def bfs(self, DMATE):
+        Q = []
+        for x in self.vertices:
+            if DMATE[x].mate == None:
+                DMATE.update({x: {'d': 0}})
+                Q.append(x)
+            else:
+                DMATE.update ({x: {'d': float('inf')}}) 
+        DMATE.update ({None: {'d': float('inf')}})  #nao entendi o Dnull da apostila
+        while Q:
+            x = Q.pop(0)
+            if DMATE[x].d < DMATE[None].d:
+                for y in vizinhos(x):
+                    if DMATE[y].mate == float('inf'):
+                        DMATE.update({y: {'mate': DMATE[x].d + 1}})
+                        Q.append(DMATE[y].mate)
+        return #seila Dnull != inf
+
+    def dfs(self, DMATE, x):
+        if x != None:
+            for y in vizinhos(x):
+                if DMATE[y].mate == DMATE[x].d + 1:
+                    if dfs('''nao sei o q enviar exatamente''') == True:
+                        DMATE.update({y: {'mate': x}})
+                        DMATE.update({x: {'mate': y}})
+                        return True
+            DMATE.update({x: {'d': float('inf')}})
+            return False
+        return True
+
+
+
+    #nao sei tem q mudar muito coisa
+    # O algoritmo recebe um grafo nao dirigido e nao ponderado (incompleto total)
+    def lawler(self):
+        X = []
+        X.insert(0, 0)
+        S = self.vertices ** 2
+        for i in S:
+
+
     def ler(self):
         # Modificar os grafos para cada Algoritmo
         file = open('./grafos/teste1.gr')
@@ -58,6 +114,16 @@ class Grafo:
                     self.arcos.update(
                         {int(temp[1]): {int(temp[2]): int(temp[3])}})
         file.close()
+
+    def vizinhos(self, vertice):
+        if self.arestas.get(vertice, False):
+            vizinhos = list(self.arestas[vertice].keys())
+        else:
+            vizinhos = []
+        for i in self.vertices:
+            if self.arestas.get(i, False) and vertice in list(self.arestas.get(i, False).keys()):
+                vizinhos.append(i)
+        return sorted(vizinhos)
 
 
 grafo = Grafo()
