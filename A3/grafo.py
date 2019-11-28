@@ -39,12 +39,13 @@ class Grafo:
                         w = t
                         while w != s:
                             w = CA[w]['a']
-                            p.append(w) 
+                            p.append(w)
                         fluxo = 0
                         for u in p:
                             if fluxo == 0 or (CA[u]['a'] != None and fluxo > arcosf[CA[u]['a']][u]):
                                 fluxo = arcosf[CA[u]['a']][u]
-                        return (p[::-1],fluxo) #Caminho e o Fluxo maximo existente!
+                        # Caminho e o Fluxo maximo existente!
+                        return (p[::-1], fluxo)
                     Q.append(v)
         return None
 
@@ -59,7 +60,7 @@ class Grafo:
         m = 0
         while self.bfs(DMATE) == True:
             for x in X:
-                if DMATE[x].mate == None:
+                if DMATE[x]['mate'] == None:
                     if self.dfs(DMATE, x) == True:
                         m = m + 1
         return (m, DMATE)
@@ -68,46 +69,51 @@ class Grafo:
         X = list(self.arcos.keys())
         Q = []
         for x in X:
-            if DMATE[x].mate == None:
-                DMATE.update({x: {'d': 0}})
+            if DMATE[x]['mate'] == None:
+                DMATE[x].update({'d': 0})
                 Q.append(x)
             else:
-                DMATE.update({x: {'d': float('inf')}})
-        # nao entendi o Dnull da apostila
+                DMATE[x].update({'d': float('inf')})
         DMATE.update({None: {'d': float('inf')}})
         while Q:
             x = Q.pop(0)
-            if DMATE[x].d < DMATE[None].d:
+            if DMATE[x]['d'] < DMATE[None]['d']:
                 for y in self.arcos.get(x, []):
-                    if DMATE[y].mate == float('inf'):
-                        DMATE.update({y: {'mate': DMATE[x].d + 1}})
-                        Q.append(DMATE[y].mate)
-        return  # seila Dnull != inf
+                    if DMATE[y]['d'] == float('inf'):
+                        DMATE[y].update({'d': DMATE[x]['d'] + 1})
+                        Q.append(DMATE[y]['mate'])
+        return DMATE[None]['d'] != float('inf')
 
     def dfs(self, DMATE, x):
         if x != None:
             for y in self.arcos.get(x, []):
-                if DMATE[y].mate == DMATE[x].d + 1:
-                    if self.dfs('''nao sei o q enviar exatamente''') == True:
-                        DMATE.update({y: {'mate': x}})
-                        DMATE.update({x: {'mate': y}})
+                if DMATE[y]['d'] == DMATE[x]['d'] + 1:
+                    if self.dfs(DMATE, DMATE[y]['mate']) == True:
+                        DMATE[y]['mate'] = x
+                        DMATE[x]['mate'] = y
                         return True
-            DMATE.update({x: {'d': float('inf')}})
+            DMATE[x].update({'d': float('inf')})
             return False
         return True
 
     # nao sei tem q mudar muito coisa
     # O algoritmo recebe um grafo nao dirigido e nao ponderado (incompleto total)
 
-    # def lawler(self):
-    #     X = []
-    #     X.insert(0, 0)
-    #     S = self.vertices ** 2
-    #     for i in S:
+    def lawler(self):
+        X = []
+        X.insert(0, 0)
+        S = {}
+        for u in self.vertices:
+            for v in self.vertices:
+                if u != v:
+                    if S.get(u, False):      
+                        S[u].update({v})
+                    else:
+                        S.update({u: {v}})
 
     def ler(self):
         # Modificar os grafos para cada Algoritmo
-        file = open('./grafos/fluxo_pequeno.gr')
+        file = open('./grafos/emparelhamento_pequeno.gr')
         infos = file.readlines()
         qtdVertices = 0
         for info in infos:
@@ -136,6 +142,7 @@ class Grafo:
 
 grafo = Grafo()
 # Fluxo Maximo utilizar somente para grafos quer são para fluxo maximo e valorados
-print(grafo.fluxoMaximo(1, 6))
+# print(grafo.fluxoMaximo(1, 6))
 # Emparelhamento maximo utilizar somente para grafos quer são para emparelhamento maximo e nao valorados
-# print(grafo.emparelhamento())
+print(grafo.emparelhamento())
+# print(grafo.lawler())
