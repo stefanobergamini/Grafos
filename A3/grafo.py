@@ -99,6 +99,16 @@ class Grafo:
             return False
         return True
 
+    def printHopcroftKarp(self):
+        print()
+        print('Hopcroft-Karp:')
+        d = self.emparelhamento()
+        m = d[0]
+        mate = d[1]
+        print("m: " + str(m))
+        for i in mate:
+            print(i, mate[i])
+        print()
     # nao sei tem q mudar muito coisa
     # O algoritmo recebe um grafo nao dirigido e nao ponderado (incompleto total)
 
@@ -147,5 +157,5 @@ grafo = Grafo()
 # Fluxo Maximo utilizar somente para grafos quer são para fluxo maximo e valorados
 # print(grafo.fluxoMaximo(1, 6))
 # Emparelhamento maximo utilizar somente para grafos quer são para emparelhamento maximo e nao valorados
-print(grafo.emparelhamento())
+print(grafo.printHopcroftKarp())
 # print(grafo.lawler())
