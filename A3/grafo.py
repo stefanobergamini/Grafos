@@ -1,5 +1,6 @@
 import re
-
+import itertools
+import networkx
 
 class Grafo:
     vertices = {}
@@ -9,6 +10,7 @@ class Grafo:
     def __init__(self):
         self.ler()
 
+    # Questão 1
     # s é a fonte , t é o servedouro e o arcosf são os arcos da rede residual
     def fluxoMaximo(self, s, t):
         arcosf = {}
@@ -49,8 +51,17 @@ class Grafo:
                     Q.append(v)
         return None
 
-    # provavelmente ta tudo errado e tem q mudar muita coisa
-    # O algoritmo recebe o grafo nao dirigido e nao ponderado bipartido
+    # Questão 2
+    def hopcroftKarp(self):
+        print()
+        print('Hopcroft-Karp:')
+        d = self.emparelhamento()
+        m = d[0]
+        mate = d[1]
+        print("m: " + str(m))
+        for i in mate:
+            print(str(i) + ' - mate: ' + str(mate[i]))
+        print()
 
     def emparelhamento(self):
         X = list(self.arcos.keys())
@@ -64,7 +75,12 @@ class Grafo:
                     if self.dfs(DMATE, x) == True:
                         m = m + 1
         del DMATE[None]
-        return (m, DMATE)
+        
+        mate = {}
+        for i in DMATE:
+            mate[i] = DMATE[i]['mate']
+
+        return (m, mate)
 
     def bfs(self, DMATE):
         X = list(self.arcos.keys())
@@ -99,34 +115,28 @@ class Grafo:
             return False
         return True
 
-    def printHopcroftKarp(self):
-        print()
-        print('Hopcroft-Karp:')
-        d = self.emparelhamento()
-        m = d[0]
-        mate = d[1]
-        print("m: " + str(m))
-        for i in mate:
-            print(i, mate[i])
-        print()
-    # nao sei tem q mudar muito coisa
-    # O algoritmo recebe um grafo nao dirigido e nao ponderado (incompleto total)
-
+    # Questão 3
     def lawler(self):
-        X = []
-        X.insert(0, 0)
+        X = {}
         S = {}
-        for u in self.vertices:
-            for v in self.vertices:
-                if u != v:
-                    if S.get(u, False):      
-                        S[u].update({v})
-                    else:
-                        S.update({u: {v}})
+        for i in (self.vertices):
+            for subset in itertools.combinations(self.vertices, i):
+                S[i] = list(subset)
+        X[0] = 0
+        for A in S:
+            s = A
+            X[s] = float('inf')
+            GL = (S, [])
+            for i in networkx.maximal_independent_set(GL):
+                i = # f(S\I)
+                if X[i] + 1 < X[s]:
+                    X[s] = X[i] + 1
+
+        return X[2**len(self.vertices) - 1]
 
     def ler(self):
         # Modificar os grafos para cada Algoritmo
-        file = open('./grafos/emparelhamento_pequeno.gr')
+        file = open('./grafos/fluxo_pequeno.gr')
         infos = file.readlines()
         qtdVertices = 0
         for info in infos:
@@ -157,5 +167,5 @@ grafo = Grafo()
 # Fluxo Maximo utilizar somente para grafos quer são para fluxo maximo e valorados
 # print(grafo.fluxoMaximo(1, 6))
 # Emparelhamento maximo utilizar somente para grafos quer são para emparelhamento maximo e nao valorados
-print(grafo.printHopcroftKarp())
-# print(grafo.lawler())
+print(grafo.hopcroftKarp())
+print(grafo.lawler())
