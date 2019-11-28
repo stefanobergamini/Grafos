@@ -56,35 +56,35 @@ class Grafo:
         X = list(self.arcos.keys())
         DMATE = {}
         for i in self.vertices:
-            DMATE.update({i: {'d': float('inf'), 'mate': 100000}})
+            DMATE.update({i: {'d': float('inf'), 'mate': None}})
         m = 0
         while self.bfs(DMATE) == True:
             for x in X:
-                if DMATE[x]['mate'] == 100000:
+                if DMATE[x]['mate'] == None:
                     if self.dfs(DMATE, x) == True:
                         m = m + 1
-        del DMATE[100000]
+        del DMATE[None]
         return (m, DMATE)
 
     def bfs(self, DMATE):
         X = list(self.arcos.keys())
         Q = []
         for x in X:
-            if DMATE[x]['mate'] == 100000:
+            if DMATE[x]['mate'] == None:
                 DMATE[x].update({'d': 0})
                 Q.append(x)
             else:
                 DMATE[x].update({'d': float('inf')})
-        DMATE[100000] = {'d': float('inf')}
+        DMATE[None] = {'d': float('inf')}
         while len(Q) != 0:
             x = Q.pop(0)
-            if DMATE[x]['d'] < DMATE[100000]['d']:
+            if DMATE[x]['d'] < DMATE[None]['d']:
                 for y in self.arcos.get(x, []):
                     a = DMATE[y]['mate']
                     if DMATE[a]['d'] == float('inf'):
                         DMATE[a].update({'d': DMATE[x]['d'] + 1})
                         Q.append(a)
-        return DMATE[100000]['d'] != float('inf')
+        return DMATE[None]['d'] != float('inf')
 
     def dfs(self, DMATE, x):
         if x != None:
