@@ -56,11 +56,11 @@ class Grafo:
         X = list(self.arcos.keys())
         DMATE = {}
         for i in self.vertices:
-            DMATE.update({i: {'d': float('inf'), 'mate': None}})
+            DMATE.update({i: {'d': float('inf'), 'mate': 'n'}})
         m = 0
         while self.bfs(DMATE) == True:
             for x in X:
-                if DMATE[x]['mate'] == None:
+                if DMATE[x]['mate'] == 'n':
                     if self.dfs(DMATE, x) == True:
                         m = m + 1
         return (m, DMATE)
@@ -69,28 +69,30 @@ class Grafo:
         X = list(self.arcos.keys())
         Q = []
         for x in X:
-            if DMATE[x]['mate'] == None:
+            if DMATE[x]['mate'] == 'n':
                 DMATE[x].update({'d': 0})
                 Q.append(x)
             else:
                 DMATE[x].update({'d': float('inf')})
-        DMATE.update({None: {'d': float('inf')}})
+        DMATE.update({'n': {'d': float('inf')}})
         while Q:
             x = Q.pop(0)
-            if DMATE[x]['d'] < DMATE[None]['d']:
+            if DMATE[x]['d'] < DMATE['n']['d']:
                 for y in self.arcos.get(x, []):
-                    if DMATE[y]['d'] == float('inf'):
-                        DMATE[y].update({'d': DMATE[x]['d'] + 1})
-                        Q.append(DMATE[y]['mate'])
-        return DMATE[None]['d'] != float('inf')
+                    a = DMATE[y]['mate']
+                    if DMATE[a]['d'] == float('inf'):
+                        DMATE[a].update({'d': DMATE[x]['d'] + 1})
+                        Q.append(DMATE[a])
+        return DMATE['n']['d'] != float('inf')
 
     def dfs(self, DMATE, x):
         if x != None:
             for y in self.arcos.get(x, []):
-                if DMATE[y]['d'] == DMATE[x]['d'] + 1:
-                    if self.dfs(DMATE, DMATE[y]['mate']) == True:
-                        DMATE[y]['mate'] = x
-                        DMATE[x]['mate'] = y
+                a = DMATE[y]['mate']
+                if DMATE[a]['d'] == DMATE[x]['d'] + 1:
+                    if self.dfs(DMATE, a) == True:
+                        DMATE[y].update({'mate': x})
+                        DMATE[x].update({'mate': y})
                         return True
             DMATE[x].update({'d': float('inf')})
             return False
