@@ -167,5 +167,5 @@ grafo = Grafo()
 # Fluxo Maximo utilizar somente para grafos quer são para fluxo maximo e valorados
 # print(grafo.fluxoMaximo(1, 6))
 # Emparelhamento maximo utilizar somente para grafos quer são para emparelhamento maximo e nao valorados
-print(grafo.hopcroftKarp())
-print(grafo.lawler())
+# print(grafo.hopcroftKarp())
+# print(grafo.lawler())
