@@ -1,6 +1,5 @@
 import re
 
-
 class Grafo:
     vertices = {}
     arcos = {}
@@ -9,6 +8,7 @@ class Grafo:
     def __init__(self):
         self.ler()  
 
+    # Edmonds-Karp
     # s é a fonte , t é o servedouro e o arcosf são os arcos da rede residual
     def fluxoMaximo(self, s, t):
         arcosf = {}
@@ -37,60 +37,62 @@ class Grafo:
                     Q.insert(0,v)
         return CA
 
-
-    #provavelmente ta tudo errado e tem q mudar muita coisa
     # O algoritmo recebe o grafo nao dirigido e nao ponderado bipartido
     def emparelhamento(self):
-        DMATE = {}
+        D = {}
+        M = {}
         for i in self.vertices:
-            DMATE.update({i: {'d': float('inf'), 'mate': None}})
+            D.update({i: {'d': float('inf')}})
+            M.update({i: {'mate': 'n'}})
         m = 0
-        while bfs('''nao sei o q enviar exatamente''') == True:
+        while bfs(M, D) == True:
             for x in self.vertices:
-                if DMATE[x].mate == None:
-                    if dfs('''nao sei o q enviar exatamente''') == True :
+                if M[x].mate == 'n':
+                    if dfs(M, x, D) == True :
                         m = m + 1
-        return (m, DMATE.mate)
+        return (m, M)
 
-    def bfs(self, DMATE):
+    def bfs(self, M, D):
         Q = []
         for x in self.vertices:
-            if DMATE[x].mate == None:
-                DMATE.update({x: {'d': 0}})
+            if M[x].mate == 'n':
+                D.update({x: {'d': 0}})
                 Q.append(x)
             else:
-                DMATE.update ({x: {'d': float('inf')}}) 
-        DMATE.update ({None: {'d': float('inf')}})  #nao entendi o Dnull da apostila
-        while Q:
+                D.update ({x: {'d': float('inf')}}) 
+        D.update({'n': {'d': float('inf')}})  #nao entendi o Dnull da apostila
+        while not Q == False:
             x = Q.pop(0)
-            if DMATE[x].d < DMATE[None].d:
+            if D[x].d < D['n'].d:
                 for y in vizinhos(x):
-                    if DMATE[y].mate == float('inf'):
-                        DMATE.update({y: {'mate': DMATE[x].d + 1}})
-                        Q.append(DMATE[y].mate)
-        return #seila Dnull != inf
+                    a = M[y].mate
+                    if D[a] == float('inf'):
+                        D.update({a: {'mate': D[x].d + 1}})
+                        Q.append(a)
+        return D['null'].d != float('inf')
 
-    def dfs(self, DMATE, x):
+    def dfs(self, M, x, D):
         if x != None:
             for y in vizinhos(x):
-                if DMATE[y].mate == DMATE[x].d + 1:
-                    if dfs('''nao sei o q enviar exatamente''') == True:
-                        DMATE.update({y: {'mate': x}})
-                        DMATE.update({x: {'mate': y}})
+                a = M[y].mate
+                if D[a] == D[x].d + 1:
+                    if dfs(M, M[y].mate, D) == True:
+                        M.update({y: {'mate': x}})
+                        M.update({x: {'mate': y}})
                         return True
-            DMATE.update({x: {'d': float('inf')}})
+            D.update({x: {'d': float('inf')}})
             return False
         return True
 
-
-
-    #nao sei tem q mudar muito coisa
-    # O algoritmo recebe um grafo nao dirigido e nao ponderado (incompleto total)
+    # Coloração de Grafos
     def lawler(self):
-        X = []
-        X.insert(0, 0)
-        S = self.vertices ** 2
+        # S dicionario com todos os subconjuntos indexados
+        X = {}
+        S = 2 ** self.vertices
         for i in S:
+            s = 
+            X[S]
+
 
 
     def ler(self):
